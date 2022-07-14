@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mashang.xiaomi.mapper.ProductMapper">
+    <select id="isConlltion" resultType="java.lang.Long">
+        select count(*) from collect where user_id =#{userId} and product_id =#{productId}
+    </select>
+
+
+    <select id="findHotProduct" resultMap="producthot">
+        select c.category_id,c.category_name,c.category_picture1,c.category_picture2,p.product_id,p.product_intro,p.product_picture,p.product_price,p.product_selling_price,p.product_title from category c left join product p on c.category_id = p.category_id  order by c.category_id ASC,p.product_sales DESC
+    </select>
+    <select id="getHotProductCount" resultType="java.lang.Long">
+        select count(*) from category
+    </select>
+    <select id="findByPid" resultMap="productdetil">
+        SELECT p.category_id,
+               cc.category_name,
+               pp.picture_id,pp.product_id,
+               pp.intro,pp.product_picture,
+               p.product_id,p.product_intro,
+               p.product_name,p.product_picture,
+               p.product_price,p.product_selling_price,
+               p.product_title
+        FROM product p
+                 LEFT JOIN product_picture pp ON p.product_id=pp.product_id
+                 LEFT JOIN category cc ON p.category_id=cc.category_id
+        WHERE p.product_id=#{productId}
+    </select>
+
+
+    <resultMap id="productdetil" type="com.mashang.xiaomi.pojo.VO.ProductDetil">
+        <id column="category_id" property="categoryId"></id>
+        <result column="category_name" property="categoryName"></result>
+        <result column="product_id" property="productId"></result>
+        <result column="product_intro" property="productIntro"></result>
+        <result column="product_name" property="productName"></result>
+        <result column="product_picture" property="productPicture"></result>
+        <result column="product_price" property="productPrice"></result>
+        <result column="product_selling_price" property="productSellingPrice"></result>
+        <result column="product_title" property="productTitle"></result>
+        <collection property="pictures" ofType="com.mashang.xiaomi.pojo.PO.ProductPicture">
+            <id column="picture_id" property="pictureId"></id>
+            <result column="product_id" property="productId"></result>
+            <result column="intro" property="intro"></result>
+            <result column="product_picture" property="productPicture"></result>
+        </collection>
+    </resultMap>
+
+    <resultMap id="producthot" type="com.mashang.xiaomi.pojo.VO.ProductHotInfo">
+        <id column="category_id" property="categoryId"></id>
+        <result column="category_name" property="categoryName"></result>
+        <result column="category_picture1" property="categoryPicture1"></result>
+        <result column="category_picture2" property="categoryPicture2"></result>
+        <collection property="productHotInfoDetils" ofType="com.mashang.xiaomi.pojo.VO.ProductHotInfoDetil">
+            <id column="product_id" property="productId"></id>
+            <result column="product_intro" property="productIntro"></result>
+            <result column="product_picture" property="productPicture"></result>
+            <result column="product_price" property="productPrice"></result>
+            <result column="product_selling_price" property="productSellingPrice"></result>
+            <result column="product_title" property="productTitle"></result>
+        </collection>
+    </resultMap>
+
+
+    
+
+</mapper>
